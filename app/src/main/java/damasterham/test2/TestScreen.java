@@ -23,7 +23,14 @@ public class TestScreen extends Screen
     public void update(float deltaTime)
     {
         gameEngine.clearFrameBuffer(Color.GRAY);
-        gameEngine.drawBitmap(bob, 500, 300);
+
+        for (int i = 0; i < 5; i++)
+        {
+            if (gameEngine.isTouchDown(i))
+            {
+                gameEngine.drawBitmap(bob, gameEngine.getTouchX(i), gameEngine.getTouchY(i));
+            }
+        }
         //Log.d(name, ": UPDATE");
     }
 
