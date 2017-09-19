@@ -27,8 +27,13 @@ public abstract class GameEngine extends Activity implements Runnable
     private Screen screen;
     private Canvas canvas;
     private Bitmap virtualScreen;
-    private Rect virtualScreenSrc;
-    private Rect virtualScreenDst;
+    private Rect virtualScreenSrc = new Rect();
+    private Rect virtualScreenDst = new Rect();
+
+    private TouchHandler touchHandler;
+    private TouchEventPool touchEventPool = new TouchEventPool();
+    private List<TouchEvent> touchEventBuffer = new ArrayList<>();
+
 
     private SurfaceView surfaceView;
     private SurfaceHolder surfaceHolder;
@@ -62,6 +67,7 @@ public abstract class GameEngine extends Activity implements Runnable
             setVirtualScreen(1080, 1920);
         }
 
+        touchHandler = new MultiTouchHandler(surfaceView, touchEventBuffer, touchEventPool);
     }
 
     public void setVirtualScreen(int width, int height)// Bitmap.Config config = Bitmap.Config.ARGB_8888)
@@ -180,17 +186,25 @@ public abstract class GameEngine extends Activity implements Runnable
 
     public boolean isTouchDown(int pointer)
     {
-        return false;
+        return touchHandler.isTouchDown(pointer);
     }
 
     public int getTouchX(int pointer)
     {
-        return 0;
+        int virtualX = 0;
+        virtualX = (int)((float)(touchHandler.getTouchX(pointer) / surfaceView.getWidth())*virtualScreen.getWidth()); // maybe float both
+
+
+        return virtualX;
     }
 
     public int getTouchY(int pointer)
     {
-        return 0;
+        int virtualY = 0;
+        virtualY = (int)((float)(touchHandler.getTouchY(pointer) / surfaceView.getHeight())*virtualScreen.getHeight()); // maybe float both
+
+
+        return virtualY;
     }
 
 //    public List<TouchEvent> getTouchEvents()
